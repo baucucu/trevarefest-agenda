@@ -16,7 +16,7 @@ const AgendaPage = (props) => {
     setUser(f7route.query?.user)
 
     let tempDays = _.groupBy(data.map(event => {
-      event.date = dayjs(event.fields["Start time"]).format("d MMM")
+      event.date = dayjs(event.fields["Play date"])
       return(event)
     }), 'date')
     let orderedDays = Object.keys(tempDays).sort().reduce(
@@ -27,7 +27,7 @@ const AgendaPage = (props) => {
         {}
       );
     console.log("days: ", orderedDays)
-    setDays(orderedDays)
+    setDays(tempDays)
   },[])
 
   return (
