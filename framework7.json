@@ -1,0 +1,26 @@
+{
+  "cwd": "/Users/Alex/Documents/JSProjects/Trevare Festival/trevare-agenda-v2",
+  "type": [
+    "web"
+  ],
+  "name": "Trevarefest Agenda",
+  "framework": "react",
+  "template": "single-view",
+  "bundler": "webpack",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": true,
+    "iconFonts": false,
+    "fillBars": false
+  },
+  "customBuild": false,
+  "webpack": {
+    "developmentSourceMap": true,
+    "productionSourceMap": true,
+    "hashAssets": false,
+    "preserveAssetsPaths": false,
+    "inlineAssets": true
+  }
+}
