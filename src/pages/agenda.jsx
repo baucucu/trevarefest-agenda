@@ -15,20 +15,15 @@ const AgendaPage = (props) => {
     
     setUser(f7route.query?.user)
 
-    let tempDays = _.groupBy(data.map(event => {
+    let tempDays = Object.entries(_.groupBy(data.map(event => {
       event.date = dayjs(event.fields["Play date"])
       return(event)
-    }), 'date')
-    let orderedDays = Object.keys(tempDays).sort().reduce(
-        (obj, key) => { 
-          obj[key] = tempDays[key]; 
-          return obj;
-        }, 
-        {}
-      );
-    console.log("days: ", orderedDays)
+    }), 'date'))
+    
     setDays(tempDays)
   },[])
+
+  useEffect(() =>{console.log("days: ", days),[days]})
 
   return (
     <Page>
@@ -42,7 +37,7 @@ const AgendaPage = (props) => {
         <div className="timeline timeline-horizontal col-50 tablet-20">
         {/* <!-- Timeline Item (Day) --> */}
         
-        {days && Object.keys(days).map((date, id) => {return(<TimeLineDay key={id} date={date} events={days[date]}/>)})}
+        {days && days.map((date, id) => {return(<TimeLineDay key={id} date={date[0]} events={date[1]}/>)})}
         </div>
     </Page>
   );
@@ -64,7 +59,7 @@ const TimeLineDay = (props) => {
     <div className="timeline-item">
       <div className="timeline-item-date">{date}</div>
       <div className="timeline-item-content">
-        {orderedEvents.map((event, id)=> {return(<TimeLineEvent key={id} event={event}/>)})}
+        {events.map((event, id)=> {return(<TimeLineEvent key={id} event={event}/>)})}
       </div>
     </div>
   )
