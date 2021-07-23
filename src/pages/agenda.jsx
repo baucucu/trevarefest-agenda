@@ -4,15 +4,21 @@ var _ = require('lodash');
 var dayjs = require('dayjs')
 
 const AgendaPage = (props) => {
+    
   const  {data, f7route, f7router} = props
   
   const [days, setDays] = useState()
   const [user, setUser] = useState()
+  const [filters,setFilters] = useState()
 
   useEffect(() => {
     // console.log("data: ", data)
     // console.log("route: ", f7route)
     
+    let tempFilters = _.uniq(data.map(event => {return(event.fields["Type"])}))
+    setFilters(tempFilters)
+    console.log("filters: ", tempFilters)
+
     setUser(f7route.query?.user)
 
     let tempDays = Object.entries(_.groupBy(data.map(event => {
@@ -33,11 +39,15 @@ const AgendaPage = (props) => {
         Additional "col-50" to define column width (50%)
         Additional "tablet-20" to define column width for tablets (20%)
         --> */}
-        <Block>Filters</Block>
+        <BlockTitle>Filters</BlockTitle>
+        <Block>
+            {filters && filters.map((filter, id) => {return(
+                <Chip key={id} text={filter}></Chip>
+            )})}
+        </Block>
         <div className="timeline timeline-horizontal col-50 tablet-20">
-        {/* <!-- Timeline Item (Day) --> */}
-        
-        {days && days.map((date, id) => {return(<TimeLineDay key={id} date={date[0]} events={date[1]}/>)})}
+            {/* <!-- Timeline Item (Day) --> */}
+            {days && days.map((date, id) => {return(<TimeLineDay key={id} date={date[0]} events={date[1]}/>)})}
         </div>
     </Page>
   );

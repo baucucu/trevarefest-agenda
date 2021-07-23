@@ -35,7 +35,7 @@ var routes = [
         }
       })
       .then(response => {
-        console.log("running orders: ",response)
+        // console.log("running orders: ",response)
         app.preloader.hide();
         // Resolve route to load page
         resolve(
