@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Page, Navbar, Block, CardHeader,CardContent, Card, CardFooter, Link, BlockTitle } from 'framework7-react';
+import { Page, Navbar, Icon, Chip, CardHeader,CardContent, Card, CardFooter, Link, BlockTitle } from 'framework7-react';
 var _ = require('lodash');
 var dayjs = require('dayjs')
 
@@ -26,7 +26,6 @@ const AgendaPage = (props) => {
   return (
     <Page>
       <Navbar title="Trevarefest Agenda"/>
-      {/* <BlockTitle>Trevarefest Agenda</BlockTitle> */}
       {/* <!--
       Additional "timeline-horizontal" className to enable Horizontal timeline
       Additional "col-50" to define column width (50%)
@@ -77,14 +76,15 @@ const TimeLineEvent = (props) => {
       >
       </CardHeader>
       <CardContent>
-        <p className="date">{dayjs(event.fields["Start time"]).format("HH:mm")}</p>
-        <p>{event.fields["Type"]}</p>
-        <p>{event.fields["Artist name"]}</p>
+        <Chip text={dayjs(event.fields["Start time"]).format("HH:mm")}>
+        </Chip>
+        <Chip text={event.fields["Type"]}></Chip>
+        <h2>{event.fields["Artist name"]}</h2>
         
         {/* <p>{event.fields["Running order ID"]}</p> */}
       </CardContent>
       <CardFooter>
-        <Link>Follow</Link>
+        <Link color="white">Follow</Link>
         {/* <Link>Read more</Link> */}
       </CardFooter>
     </Card>
