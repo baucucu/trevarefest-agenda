@@ -106,7 +106,7 @@ const AgendaPage = (props) => {
         </Block>
         <div className="timeline timeline-horizontal col-50 tablet-20">
             {/* <!-- Timeline Item (Day) --> */}
-            {days && days.map((date, id) => {return(<TimeLineDay filters={filters} user={user} key={id} date={date[0]} events={date[1]}/>)})}
+            {days && days.map((date, id) => {return(<TimeLineDay router={f7router} filters={filters} user={user} key={id} date={date[0]} events={date[1]}/>)})}
         </div>
     </Page>
   );
@@ -115,7 +115,7 @@ const AgendaPage = (props) => {
 export default AgendaPage;
 
 const TimeLineDay = (props) => {
-  const {date, events, filters, user} = props;
+  const {router, date, events, filters, user} = props;
   
   const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
 
@@ -128,14 +128,14 @@ const TimeLineDay = (props) => {
     <div className="timeline-item">
       <div className="timeline-item-date">{dayjs(date).format("D MMM")}</div>
       <div className="timeline-item-content">
-        {orderedEvents.map((event, id)=> {return(<TimeLineEvent key={id} user={user} event={event}/>)})}
+        {orderedEvents.map((event, id)=> {return(<TimeLineEvent key={id} router={router} user={user} event={event}/>)})}
       </div>
     </div>
   )
 } 
 
 const TimeLineEvent = (props) => {
-  const {event, user} = props;
+  const {router, event, user} = props;
   // useEffect(()=>{
   //   console.log("event: ",event )
   // },[])
@@ -164,7 +164,10 @@ const TimeLineEvent = (props) => {
         }]
       }
     })
-    .then(res => {console.log(res)})
+    .then(res => {
+      console.log(res)
+      router.refreshPage()
+    })
     .catch(err => {console.log(err)})
   }
 
