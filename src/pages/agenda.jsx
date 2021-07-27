@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import { Button,Segmented, Page, Navbar, Block, Chip, CardHeader,CardContent, Card, CardFooter, Link, BlockTitle, Icon } from 'framework7-react';
+import axios from 'axios';
 var _ = require('lodash');
 var dayjs = require('dayjs')
 
 const AgendaPage = (props) => {
+
 
   function switchFilter(filter) {
       console.log("filters clicked: ", filter)
@@ -61,6 +63,10 @@ const AgendaPage = (props) => {
     }
   },[filteredEvents])
 
+  useEffect(() => {
+    console.log("router: ", f7router)
+  })
+
   // useEffect(() => {
   //   console.log("props events: ", events)
   //   console.log("props user: ", user)
@@ -94,8 +100,8 @@ const AgendaPage = (props) => {
         </Block>
         <Block>
           <Segmented raised  tag="p">
-            <Button outline active={!myEvents} textColor="white" onClick={()=> toggleMyEvents(false)}>All events</Button>
-            <Button outline active={myEvents} textColor="white" onClick={()=> toggleMyEvents(true)}>My events</Button>
+            <Button outline color="blue" active={!myEvents} textColor="white" onClick={()=> toggleMyEvents(false)}>All events</Button>
+            <Button outline color="blue" active={myEvents} textColor="white" onClick={()=> toggleMyEvents(true)}>My events</Button>
           </Segmented>
         </Block>
         <div className="timeline timeline-horizontal col-50 tablet-20">
@@ -134,8 +140,37 @@ const TimeLineEvent = (props) => {
   //   console.log("event: ",event )
   // },[])
 
-  function followEvent(event,user) {
+  function toggleFollowing(action,event,user) {
     
+    let followers = event.fields?.Followers || []
+    
+    if(action === "follow") 
+      {followers.push(user.id)}
+    else
+      {followers = followers.filter(userId => {return userId !== user.id})}
+
+    axios({
+      url: "https://api.airtable.com/v0/appw2hvpKRTQCbB4O/Running%20order",
+      method: "patch",
+      headers: {
+        "Authorization": "Bearer keyYNFILTvHzPsq1B"
+      },
+      data: {
+        records: [{
+          id: event.id,
+          fields: {
+            Followers: followers
+          }
+        }]
+      }
+    })
+    .then(res => {console.log(res)})
+    .catch(err => {console.log(err)})
+  }
+
+  function checkFollower(userId) {
+    if(event.fields?.Followers?.includes(userId)) {return true}
+    // return false
   }
 
   return(
@@ -158,7 +193,20 @@ const TimeLineEvent = (props) => {
         {/* <p>{event.fields["Running order ID"]}</p> */}
       </CardContent>
       <CardFooter>
-        <Button outline raised round small color="white" onClick={()=> followEvent(event,user)}>Follow</Button>
+        <Button 
+          outline 
+          raised 
+          round 
+          small 
+          icon="eye_fill" 
+          fill={checkFollower(user.id)} 
+          color={checkFollower(user.id) ? "blue" : "white"} 
+          // textColor={checkFollower(user.id) ? "black" : "white"}
+          textColor="white"
+          onClick={()=> toggleFollowing(checkFollower(user.id) ? "unfollow": "follow",event,user)}
+        >
+          {checkFollower(user.id) ? "Unfollow" : "Follow"}
+        </Button>
         {/* <Link>Read more</Link> */}
       </CardFooter>
     </Card>
