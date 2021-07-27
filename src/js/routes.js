@@ -11,10 +11,6 @@ import AgendaPage from '../pages/agenda.jsx'
 const axios = require('axios');
 
 var routes = [
-  // {
-  //   path: '/',
-  //   component: AgendaPage
-  // },
   {
     path: '/',
     async: function ({ router, to, resolve }) {
@@ -25,17 +21,33 @@ var routes = [
       app.preloader.show();
 
       // User ID from request
-      var userId = to.params.userId;
+      
+      var userId = to.query.userId;
 
-      axios({
-        url: "https://api.airtable.com/v0/appw2hvpKRTQCbB4O/Running%20order",
-        method: 'get',
-        headers: {
-          "Authorization": "Bearer keyYNFILTvHzPsq1B"
-        }
-      })
+      function getUser(recordId) {
+        return axios({
+          url: `https://api.airtable.com/v0/appw2hvpKRTQCbB4O/Directory%3A%20People/${recordId}`,
+          method: 'get',
+          headers: {
+            "Authorization": "Bearer keyYNFILTvHzPsq1B"
+          }
+        })
+      }
+
+      function getEvents() {
+        return axios({
+          url: "https://api.airtable.com/v0/appw2hvpKRTQCbB4O/Running%20order",
+          method: 'get',
+          headers: {
+            "Authorization": "Bearer keyYNFILTvHzPsq1B"
+          }
+        })
+      }
+
+      Promise.all([getEvents(), getUser(userId)])
       .then(response => {
-        // console.log("running orders: ",response)
+        // console.log("preloading data: ",response)
+        
         app.preloader.hide();
         // Resolve route to load page
         resolve(
@@ -44,8 +56,8 @@ var routes = [
           },
           {
             props: {
-              userId: userId,
-              data: response.data.records
+              user: response[1].data,
+              events: response[0].data.records
             }
           }
         );

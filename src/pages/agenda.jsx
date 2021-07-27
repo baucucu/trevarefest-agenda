@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Button, Page, Navbar, Block, Chip, CardHeader,CardContent, Card, CardFooter, Link, BlockTitle } from 'framework7-react';
+import { Button,Segmented, Page, Navbar, Block, Chip, CardHeader,CardContent, Card, CardFooter, Link, BlockTitle, Icon } from 'framework7-react';
 var _ = require('lodash');
 var dayjs = require('dayjs')
 
@@ -13,17 +13,23 @@ const AgendaPage = (props) => {
       setFilters({...filters,...tempFilters})
   }
 
-  const  {data, f7route, f7router} = props
+  function toggleMyEvents(bool) {
+    setMyEvents(bool)
+  }
+
+  const  {events, user, f7route, f7router} = props
   
   const [days, setDays] = useState()
-  const [user, setUser] = useState()
   const [filters,setFilters] = useState()
-  const [filteredData, setFilteredData] = useState()
+  const [myEvents, setMyEvents] = useState(false)
+  const [filteredEvents, setFilteredEvents] = useState()
+  const [personalEvents, setPersonalEvents] = useState()
 
+  // setup filters
   useEffect(() => {
     let myFilters = {}
     _.uniq(
-        data.map( event => {
+        events.map( event => {
             return(
                 event.fields["Type"]
             )
@@ -35,39 +41,43 @@ const AgendaPage = (props) => {
     setFilters(myFilters)
   },[])
 
+  // filter events
   useEffect(() => {
-    console.log("data: ", data)
     if(filters){
-      setFilteredData( data.filter(event => {return(filters[event.fields["Type"]])}) )
+      setFilteredEvents( events.filter(event => {return(filters[event.fields["Type"]])}) )
     }
     
   },[filters, setFilters]) 
 
+  // group events by date
   useEffect(() => {
-    setUser(f7route.query?.user)
-  },[])
-
-  useEffect(() => {
-    if(filteredData){
-      let tempDays = Object.entries(_.groupBy(filteredData.map(event => {
+    if(filteredEvents){
+      let tempDays = Object.entries(_.groupBy(filteredEvents.map(event => {
         event.date = dayjs(event.fields["Play date"])
         return(event)
       }), 'date'))
       
       setDays(tempDays)
     }
-  },[filteredData])
+  },[filteredEvents])
 
-  useEffect(() => {
-    console.log("filters changed: ", filters)
-  }, [filters,setFilters])
+  // useEffect(() => {
+  //   console.log("props events: ", events)
+  //   console.log("props user: ", user)
+  //   f7route.query?.user && getUser(f7route.query?.user)
+  // },[])
 
-  useEffect(() => {console.log("days changed: ", days),[days,setDays]})
-  useEffect(() => {console.log("filteredData changed: ", filteredData),[filteredData,setFilteredData]})
+  // useEffect(() => {
+  //   console.log("filters changed: ", filters)
+  // }, [filters,setFilters])
+
+  // useEffect(() => {console.log("days changed: ", days),[days,setDays]})
+  // useEffect(() => {console.log("filteredData changed: ", filteredData),[filteredData,setFilteredData]})
 
   return (
     <Page>
-          <Navbar title="Trevarefest Agenda"/>
+        <Navbar title={"Trevarefest Agenda - "+user.fields["Name"]}> 
+        </Navbar>
         {/* <!--
         Additional "timeline-horizontal" className to enable Horizontal timeline
         Additional "col-50" to define column width (50%)
@@ -80,12 +90,17 @@ const AgendaPage = (props) => {
                   <Link key={id} onClick={()=> {switchFilter(filter[0])}}>
                     <Chip color="blue"  outline={!filter[1]} textColor="white"   text={filter[0]}></Chip>  
                   </Link>
-                
             )})}
+        </Block>
+        <Block>
+          <Segmented raised  tag="p">
+            <Button outline active={!myEvents} textColor="white" onClick={()=> toggleMyEvents(false)}>All events</Button>
+            <Button outline active={myEvents} textColor="white" onClick={()=> toggleMyEvents(true)}>My events</Button>
+          </Segmented>
         </Block>
         <div className="timeline timeline-horizontal col-50 tablet-20">
             {/* <!-- Timeline Item (Day) --> */}
-            {days && days.map((date, id) => {return(<TimeLineDay filters={filters} key={id} date={date[0]} events={date[1]}/>)})}
+            {days && days.map((date, id) => {return(<TimeLineDay filters={filters} user={user} key={id} date={date[0]} events={date[1]}/>)})}
         </div>
     </Page>
   );
@@ -94,30 +109,35 @@ const AgendaPage = (props) => {
 export default AgendaPage;
 
 const TimeLineDay = (props) => {
-  const {date, events, filters} = props;
+  const {date, events, filters, user} = props;
   
-  // const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
+  const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
 
-  useEffect(()=>{
-    // console.log("day: ", date)
-    console.log("events: ", events)
-  },[])
+  // useEffect(()=>{
+  //   console.log("day: ", date)
+  //   console.log("events: ", events)
+  // },[])
 
   return (
     <div className="timeline-item">
       <div className="timeline-item-date">{dayjs(date).format("D MMM")}</div>
       <div className="timeline-item-content">
-        {events.map((event, id)=> {return(<TimeLineEvent key={id} event={event}/>)})}
+        {orderedEvents.map((event, id)=> {return(<TimeLineEvent key={id} user={user} event={event}/>)})}
       </div>
     </div>
   )
 } 
 
 const TimeLineEvent = (props) => {
-  const {event} = props;
-  useEffect(()=>{
-    // console.log("event: ",event )
-  },[])
+  const {event, user} = props;
+  // useEffect(()=>{
+  //   console.log("event: ",event )
+  // },[])
+
+  function followEvent(event,user) {
+    
+  }
+
   return(
     <Card className="demo-card-header-pic">
       <CardHeader
@@ -138,7 +158,7 @@ const TimeLineEvent = (props) => {
         {/* <p>{event.fields["Running order ID"]}</p> */}
       </CardContent>
       <CardFooter>
-        <Button color="white">Follow</Button>
+        <Button outline raised round small color="white" onClick={()=> followEvent(event,user)}>Follow</Button>
         {/* <Link>Read more</Link> */}
       </CardFooter>
     </Card>
