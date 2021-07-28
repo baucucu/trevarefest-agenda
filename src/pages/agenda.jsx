@@ -105,7 +105,13 @@ const AgendaPage = (props) => {
         Additional "col-50" to define column width (50%)
         Additional "tablet-20" to define column width for tablets (20%)
         --> */}
-        <BlockTitle>Filters</BlockTitle>
+        {/* <BlockTitle>Filters</BlockTitle> */}
+        <Block>
+          <Segmented raised  tag="p">
+            <Button outline color="blue" active={!myEvents} textColor="white" onClick={()=> toggleMyEvents(false)}>All events</Button>
+            <Button outline color="blue" active={myEvents} textColor="white" onClick={()=> toggleMyEvents(true)}>My events</Button>
+          </Segmented>
+        </Block>
         <Block>
             {filters && Object.entries(filters).map((filter, id) => {
                 return(
@@ -114,12 +120,7 @@ const AgendaPage = (props) => {
                   </Link>
             )})}
         </Block>
-        <Block>
-          <Segmented raised  tag="p">
-            <Button outline color="blue" active={!myEvents} textColor="white" onClick={()=> toggleMyEvents(false)}>All events</Button>
-            <Button outline color="blue" active={myEvents} textColor="white" onClick={()=> toggleMyEvents(true)}>My events</Button>
-          </Segmented>
-        </Block>
+        
         <div className="timeline timeline-horizontal col-50 tablet-20">
             {/* <!-- Timeline Item (Day) --> */}
             {days && days.map((date, id) => {return(<TimeLineDay router={f7router} filters={filters} user={user} key={id} date={date[0]} events={date[1]}/>)})}
