@@ -25,7 +25,10 @@ const AgendaPage = (props) => {
   const [filters,setFilters] = useState()
   const [myEvents, setMyEvents] = useState(false)
   const [filteredEvents, setFilteredEvents] = useState()
-  const [personalEvents, setPersonalEvents] = useState()
+
+  useEffect(() => {
+    console.log("my agenga clicked: ", myEvents)
+  },[myEvents,setMyEvents])
 
   // setup filters
   useEffect(() => {
@@ -49,7 +52,15 @@ const AgendaPage = (props) => {
       setFilteredEvents( events.filter(event => {return(filters[event.fields["Type"]])}) )
     }
     
-  },[filters, setFilters]) 
+  },[filters, setFilters, myEvents, setMyEvents]) 
+
+  useEffect(() => {
+    if(myEvents && filters){
+      setFilteredEvents(filteredEvents.filter(event => {
+        return(JSON.stringify(event).indexOf(user.id) !== -1)
+      }))
+    }
+  },[myEvents, setMyEvents])
 
   // group events by date
   useEffect(() => {
@@ -64,21 +75,17 @@ const AgendaPage = (props) => {
   },[filteredEvents])
 
   useEffect(() => {
-    console.log("router: ", f7router)
-  })
+    console.log("props events: ", events)
+    // console.log("props user: ", user)
+    // f7route.query?.user && getUser(f7route.query?.user)
+  },[])
 
-  // useEffect(() => {
-  //   console.log("props events: ", events)
-  //   console.log("props user: ", user)
-  //   f7route.query?.user && getUser(f7route.query?.user)
-  // },[])
+  useEffect(() => {
+    console.log("filters changed: ", filters)
+  }, [filters,setFilters])
 
-  // useEffect(() => {
-  //   console.log("filters changed: ", filters)
-  // }, [filters,setFilters])
-
-  // useEffect(() => {console.log("days changed: ", days),[days,setDays]})
-  // useEffect(() => {console.log("filteredData changed: ", filteredData),[filteredData,setFilteredData]})
+  useEffect(() => {console.log("days changed: ", days),[days,setDays]})
+  useEffect(() => {console.log("filteredData changed: ", filteredEvents),[filteredEvents,setFilteredEvents]})
 
   return (
     <Page>
