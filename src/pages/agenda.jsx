@@ -3,6 +3,11 @@ import { Button,Segmented, Page, Navbar, Block, Chip, CardHeader,CardContent, Ca
 import axios from 'axios';
 var _ = require('lodash');
 var dayjs = require('dayjs')
+var utc = require('dayjs/plugin/utc')
+var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 
 const AgendaPage = (props) => {
 
@@ -61,7 +66,8 @@ const AgendaPage = (props) => {
   useEffect(() => {
     if(filteredEvents){
       let tempDays = Object.entries(_.groupBy(filteredEvents.map(event => {
-        event.date = dayjs(event.fields["Start time"]).format('YYYY/MM/DD')
+        const timeZone = 'Europe/Oslo' 
+        event.date = dayjs(event.fields["Start time"], {timeZone}).format('D MMM')
         return(event)
       }), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
       setDays(tempDays)
@@ -123,7 +129,7 @@ export default AgendaPage;
 const TimeLineDay = (props) => {
   const {router, date, events, filters, user} = props;
   
-  // const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
+  const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
 
   // useEffect(()=>{
   //   console.log("day: ", date)
@@ -134,7 +140,7 @@ const TimeLineDay = (props) => {
     <div className="timeline-item">
       <div className="timeline-item-date">{dayjs(date).format("D MMM")}</div>
       <div className="timeline-item-content">
-        {events.map((event, id)=> {return(<TimeLineEvent key={id} router={router} user={user} event={event}/>)})}
+        {orderedEvents.map((event, id)=> {return(<TimeLineEvent key={id} router={router} user={user} event={event}/>)})}
       </div>
     </div>
   )
@@ -182,6 +188,9 @@ const TimeLineEvent = (props) => {
     // return false
   }
 
+  const timeZone = 'Europe/Oslo' 
+  // event.date = dayjs(event.fields["Start time"], {timeZone}).format('D MMM')
+
   return(
     <Card className="demo-card-header-pic">
       <CardHeader
@@ -194,9 +203,10 @@ const TimeLineEvent = (props) => {
       >
       </CardHeader>
       <CardContent>
-        <Chip text={dayjs(event.fields["Start time"]).format("HH:mm")}>
+        <Chip text={dayjs(event.fields["Start time"], {timeZone}).format("HH:mm")}>
         </Chip>
         <Chip text={event.fields["Type"]}></Chip>
+        <Chip text={event.fields["Location Name"]}></Chip>
         <h2>{event.fields["Artist name"]}</h2>
         
         {/* <p>{event.fields["Running order ID"]}</p> */}
