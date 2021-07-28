@@ -57,7 +57,7 @@ const AgendaPage = (props) => {
   useEffect(() => {
     if(myEvents && filters){
       setFilteredEvents(filteredEvents.filter(event => {
-        return(JSON.stringify(event).indexOf(user.id) !== -1)
+        return(JSON.stringify(event).indexOf(user.id) > -1)
       }))
     }
   },[myEvents, setMyEvents])
