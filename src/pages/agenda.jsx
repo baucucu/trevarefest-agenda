@@ -94,14 +94,14 @@ const AgendaPage = (props) => {
         Additional "col-50" to define column width (50%)
         Additional "tablet-20" to define column width for tablets (20%)
         --> */}
-        {/* <BlockTitle>Filters</BlockTitle> */}
-        <Block>
+        {/* <BlockTitle slot="fixed">{"Trevarefest Agenda - "+user.fields["Name"]}</BlockTitle> */}
+        <Block >
           <Segmented raised  tag="p">
             <Button outline color="blue" active={!myEvents} textColor="white" onClick={()=> toggleMyEvents(false)}>All events</Button>
             <Button outline color="blue" active={myEvents} textColor="white" onClick={()=> toggleMyEvents(true)}>My events</Button>
           </Segmented>
         </Block>
-        <Block>
+        <Block >
             {filters && Object.entries(filters).map((filter, id) => {
                 return(
                   <Link key={id} onClick={()=> {switchFilter(filter[0])}}>
@@ -188,7 +188,7 @@ const TimeLineEvent = (props) => {
         className="no-border"
         valign="bottom"
         style={{
-          backgroundImage: `url(${event.fields["Image"]?.[0].url})`,
+          backgroundImage: `url(${event.fields["Image"]?.[0].thumbnails.small})`,
           height: '300px',          
         }}
       >
