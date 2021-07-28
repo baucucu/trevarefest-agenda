@@ -61,7 +61,7 @@ const AgendaPage = (props) => {
   useEffect(() => {
     if(filteredEvents){
       let tempDays = Object.entries(_.groupBy(filteredEvents.map(event => {
-        event.date = dayjs(event.fields["Play date"])
+        event.date = dayjs(event.fields["Start time"]).format('YYYY/MM/DD')
         return(event)
       }), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
       setDays(tempDays)
@@ -123,7 +123,7 @@ export default AgendaPage;
 const TimeLineDay = (props) => {
   const {router, date, events, filters, user} = props;
   
-  const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
+  // const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
 
   // useEffect(()=>{
   //   console.log("day: ", date)
@@ -134,7 +134,7 @@ const TimeLineDay = (props) => {
     <div className="timeline-item">
       <div className="timeline-item-date">{dayjs(date).format("D MMM")}</div>
       <div className="timeline-item-content">
-        {orderedEvents.map((event, id)=> {return(<TimeLineEvent key={id} router={router} user={user} event={event}/>)})}
+        {events.map((event, id)=> {return(<TimeLineEvent key={id} router={router} user={user} event={event}/>)})}
       </div>
     </div>
   )
