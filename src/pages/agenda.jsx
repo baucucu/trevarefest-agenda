@@ -110,7 +110,7 @@ const AgendaPage = (props) => {
             )})}
         </Block>
         
-        <div className="timeline timeline-horizontal col-50 tablet-20">
+        <div className="timeline timeline-horizontal col-70 tablet-30">
             {/* <!-- Timeline Item (Day) --> */}
             {days && days.map((date, id) => {return(<TimeLineDay router={f7router} filters={filters} user={user} key={id} date={date[0]} events={date[1]}/>)})}
         </div>
@@ -189,7 +189,7 @@ const TimeLineEvent = (props) => {
         valign="bottom"
         style={{
           backgroundImage: `url(${event.fields["Image"]?.[0].url})`,
-          height: '160px',          
+          height: '300px',          
         }}
       >
       </CardHeader>
