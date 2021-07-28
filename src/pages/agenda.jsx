@@ -188,7 +188,7 @@ const TimeLineEvent = (props) => {
         className="no-border"
         valign="bottom"
         style={{
-          backgroundImage: `url(${event.fields["Image"]?.[0].thumbnails.small})`,
+          backgroundImage: `url(${event.fields["Image"]?.[0].thumbnails.large.url})`,
           height: '300px',          
         }}
       >
