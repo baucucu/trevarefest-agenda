@@ -46,21 +46,30 @@ const AgendaPage = (props) => {
     setFilters(myFilters)
   },[])
 
-  // filter events
-  useEffect(() => {
-    if(filters){
-      setFilteredEvents( events.filter(event => {return(filters[event.fields["Type"]])}) )
-    }
-    
-  },[filters, setFilters, myEvents, setMyEvents]) 
-
   useEffect(() => {
     if(myEvents && filters){
-      setFilteredEvents(filteredEvents.filter(event => {
+      setFilteredEvents(events.filter(event => {
+        return(JSON.stringify(event).indexOf(user.id) > -1)
+      }).filter(event => {return(filters[event.fields["Type"]])}))
+    } else if(myEvents) {
+      setFilteredEvents(events.filter(event => {
         return(JSON.stringify(event).indexOf(user.id) > -1)
       }))
+    } else if(filters){
+      setFilteredEvents( events.filter(event => {return(filters[event.fields["Type"]])}) )
     }
-  },[myEvents, setMyEvents])
+
+  },[filters,setFilters, myEvents, setMyEvents])
+
+  // // filter events
+  // useEffect(() => {
+  //   if(filters){
+  //     setFilteredEvents( events.filter(event => {return(filters[event.fields["Type"]])}) )
+  //   }
+    
+  // },[filters, setFilters]) 
+
+  
 
   // group events by date
   useEffect(() => {
