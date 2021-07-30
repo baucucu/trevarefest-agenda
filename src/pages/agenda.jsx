@@ -35,7 +35,11 @@ const AgendaPage = (props) => {
   useEffect(() => {
     let myFilters = {}
     _.uniq(
-        events.map( event => {
+        events.filter(event=> {
+          if(myEvents) { return true }
+          else if(event.fields.Type === "Transportation") { return false }
+          else {return true}
+        }).map( event => {
             return(
                 event.fields["Type"]
             )
@@ -44,8 +48,11 @@ const AgendaPage = (props) => {
             myFilters[filter] = true
         }
     )
+    console.log("myFilters: ", myFilters)
     setFilters(myFilters)
-  },[])
+  },[myEvents,setMyEvents])
+
+
 
   useEffect(() => {
     if(myEvents && filters){
@@ -57,7 +64,12 @@ const AgendaPage = (props) => {
         return(JSON.stringify(event).indexOf(user.id) > -1)
       }))
     } else if(filters){
-      setFilteredEvents( events.filter(event => {return(filters[event.fields["Type"]])}) )
+      setFilteredEvents( events.filter(event => {
+        if(event.fields.Type === "Transportation") {return false}
+        else {
+          return(filters[event.fields["Type"]])
+        }
+      }) )
     }
 
   },[filters,setFilters, myEvents, setMyEvents])  
