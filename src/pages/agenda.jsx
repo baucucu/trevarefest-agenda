@@ -66,8 +66,8 @@ const AgendaPage = (props) => {
   useEffect(() => {
     if(filteredEvents){
       let tempDays = Object.entries(_.groupBy(filteredEvents.map(event => {
-        const timeZone = 'Europe/Oslo' 
-        event.date = dayjs(event.fields["Start time"].replace("000Z","002Z"), {timeZone}).format('D MMM')
+        // const timeZone = 'Europe/Oslo' 
+        event.date = dayjs(event.fields["Play date"])
         return(event)
       }), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
       setDays(tempDays)
@@ -189,7 +189,7 @@ const TimeLineEvent = (props) => {
   }
 
   const timeZone = 'Europe/Oslo' 
-  event.date = dayjs(event.fields["Start time"].replace("000Z","0002Z"), {timeZone}).format('D MMM')
+  // event.date = dayjs(event.fields["Start time"], {timeZone}).format('D MMM')
 
   return(
     <Card className="demo-card-header-pic">
@@ -197,13 +197,13 @@ const TimeLineEvent = (props) => {
         className="no-border"
         valign="bottom"
         style={{
-          backgroundImage: `url(${event.fields["Image"]?.[0].thumbnails.large.url})`,
+          backgroundImage: `url(${event.fields["Image"]?.[0]?.thumbnails?.large?.url || ""})`,
           height: '300px',          
         }}
       >
       </CardHeader>
       <CardContent>
-        <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).format("HH:mm")}>
+        <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).add(1,"hours").format("HH:mm")}>
         </Chip>
         <Chip text={event.fields["Type"]}></Chip>
         <Chip text={event.fields["Location Name"]}></Chip>
