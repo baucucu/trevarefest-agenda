@@ -67,7 +67,7 @@ const AgendaPage = (props) => {
     if(filteredEvents){
       let tempDays = Object.entries(_.groupBy(filteredEvents.map(event => {
         const timeZone = 'Europe/Oslo' 
-        event.date = dayjs(event.fields["Start time"], {timeZone}).format('D MMM')
+        event.date = dayjs(event.fields["Start time"].replace("000Z","002Z"), {timeZone}).format('D MMM')
         return(event)
       }), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
       setDays(tempDays)
@@ -131,10 +131,10 @@ const TimeLineDay = (props) => {
   
   const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
 
-  // useEffect(()=>{
-  //   console.log("day: ", date)
-  //   console.log("events: ", events)
-  // },[])
+  useEffect(()=>{
+    console.log("day: ", date)
+    // console.log("events: ", events)
+  },[])
 
   return (
     <div className="timeline-item">
@@ -189,7 +189,7 @@ const TimeLineEvent = (props) => {
   }
 
   const timeZone = 'Europe/Oslo' 
-  // event.date = dayjs(event.fields["Start time"], {timeZone}).format('D MMM')
+  event.date = dayjs(event.fields["Start time"].replace("000Z","0002Z"), {timeZone}).format('D MMM')
 
   return(
     <Card className="demo-card-header-pic">
@@ -203,7 +203,7 @@ const TimeLineEvent = (props) => {
       >
       </CardHeader>
       <CardContent>
-        <Chip text={dayjs(event.fields["Start time"], {timeZone}).format("HH:mm")}>
+        <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).format("HH:mm")}>
         </Chip>
         <Chip text={event.fields["Type"]}></Chip>
         <Chip text={event.fields["Location Name"]}></Chip>

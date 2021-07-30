@@ -8,6 +8,13 @@
 import NotFoundPage from '../pages/404.jsx';
 import AgendaPage from '../pages/agenda.jsx'
 
+var _ = require('lodash');
+var dayjs = require('dayjs')
+var utc = require('dayjs/plugin/utc')
+var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 const axios = require('axios');
 
 var routes = [
@@ -46,7 +53,7 @@ var routes = [
 
       Promise.all([getEvents(), getUser(userId)])
       .then(response => {
-        // console.log("preloading data: ",response)
+        console.log("preloading data: ",response)
         
         app.preloader.hide();
         // Resolve route to load page
@@ -57,7 +64,10 @@ var routes = [
           {
             props: {
               user: response[1].data,
-              events: response[0].data.records
+              events: response[0].data.records.map(event => {
+                // event.localTime = event.fields["Start time"].local().format()
+                return(event)
+              })
             }
           }
         );
