@@ -215,11 +215,14 @@ const TimeLineEvent = (props) => {
       >
       </CardHeader>
       <CardContent>
-        <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).add(0,"hours").format("HH:mm")}>
-        </Chip>
+        {event.fields?.["Artist name"] && <h2>{event.fields["Artist name"]}</h2>}
+        {event.fields?.["VIP Activity Type"] && <h2>{event.fields["VIP Activity Type"]}</h2>}
+        <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).add(0,"hours").format("HH:mm")}></Chip>
         <Chip text={event.fields["Type"]}></Chip>
-        <Chip text={event.fields["Location Name"]}></Chip>
-        <h2>{event.fields["Artist name"]}</h2>
+        {event.fields?.["Location Name"] && <Chip text={event.fields["Location Name"]}></Chip>}
+        {event.fields?.["VIP Activity Location Name"] && <Chip text={event.fields["VIP Activity Location Name"]}></Chip>}
+        {event.fields.Type === "Transportation" && event.fields?.["From Name"] && <Chip text={"From: "+event.fields["From Name"]}></Chip>}
+        {event.fields.Type === "Transportation" && event.fields?.["To Name"] && <Chip text={"To: "+event.fields["To Name"]}></Chip>}
         
         {/* <p>{event.fields["Running order ID"]}</p> */}
       </CardContent>
