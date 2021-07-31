@@ -215,7 +215,7 @@ const TimeLineEvent = (props) => {
       >
       </CardHeader>
       <CardContent>
-        <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).add(1,"hours").format("HH:mm")}>
+        <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).add(0,"hours").format("HH:mm")}>
         </Chip>
         <Chip text={event.fields["Type"]}></Chip>
         <Chip text={event.fields["Location Name"]}></Chip>
