@@ -172,21 +172,22 @@ const TimeLineEvent = (props) => {
       {followers.push(user.id)}
     else
       {followers = followers.filter(userId => {return userId !== user.id})}
-
+    let data =  {
+      records: [{
+        id: event.id,
+        fields: {
+          Followers: followers
+        }
+      }]
+    }
+    console.log("data: ",data)
     axios({
       url: "https://api.airtable.com/v0/appw2hvpKRTQCbB4O/Running%20order",
       method: "patch",
       headers: {
         "Authorization": "Bearer keyYNFILTvHzPsq1B"
       },
-      data: {
-        records: [{
-          id: event.id,
-          fields: {
-            Followers: followers
-          }
-        }]
-      }
+      data
     })
     .then(res => {
       console.log(res)
