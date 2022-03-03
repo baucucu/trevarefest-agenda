@@ -43,7 +43,7 @@ var routes = [
 
       function getEvents() {
         return axios({
-          url: "https://api.airtable.com/v0/appw2hvpKRTQCbB4O/Running%20order",
+          url: "https://api.airtable.com/v0/appw2hvpKRTQCbB4O/tblqOcPguzuv5UhkG?view=viw83kdbk8vFgZab4",
           method: 'get',
           headers: {
             "Authorization": "Bearer keyYNFILTvHzPsq1B"
