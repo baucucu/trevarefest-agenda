@@ -20,6 +20,7 @@
   ],
   "dependencies": {
     "axios": "^0.21.1",
+    "date-fns": "^2.28.0",
     "dayjs": "^1.10.6",
     "dom7": "^3.0.0",
     "framework7": "^6.0.22",

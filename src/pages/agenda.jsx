@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Button,Segmented, Page, Navbar, Block, Chip, CardHeader,CardContent, Card, CardFooter, Link, BlockTitle, Icon } from 'framework7-react';
 import axios from 'axios';
+import { format, compareAsc, parseISO } from 'date-fns'
 var _ = require('lodash');
 var dayjs = require('dayjs')
 var utc = require('dayjs/plugin/utc')
@@ -37,7 +38,12 @@ const AgendaPage = (props) => {
     _.uniq(
         events.filter(event=> {
           if(myEvents) { return true }
-          else if(event.fields.Type === "Transportation") { return false }
+          else if(
+            event.fields.Type === "Transportation" ||
+            event.fields.Type === "GET IN" ||
+            event.fields.Type === "SOUNDCHECK" ||
+            event.fields.Type === "CHANGE-OVER"
+          ) { return false }
           else {return true}
         }).map( event => {
             return(
@@ -66,6 +72,9 @@ const AgendaPage = (props) => {
     } else if(filters){
       setFilteredEvents( events.filter(event => {
         if(event.fields.Type === "Transportation") {return false}
+        if(event.fields.Type === "GET IN") {return false}
+        if(event.fields.Type === "SOUNDCHECK") {return false}
+        if(event.fields.Type === "CHANGE-OVER") {return false}
         else {
           return(filters[event.fields["Type"]])
         }
@@ -141,11 +150,15 @@ export default AgendaPage;
 const TimeLineDay = (props) => {
   const {router, date, events, filters, user} = props;
   
-  const orderedEvents = events.sort((a,b) => {return(new Date(a.fields["Start time"]) - new Date(b.fields["Start time"]))})
+  const orderedEvents = events.sort((a,b) => {
+    const isBefore = compareAsc( parseISO(a.fields["Start time"]), parseISO(b.fields["Start time"])) 
+    // console.log("isBefore: ", isBefore)
+    return isBefore
+  })
 
   useEffect(()=>{
     console.log("day: ", date)
-    // console.log("events: ", events)
+    console.log("events: ", orderedEvents)
   },[])
 
   return (
@@ -217,7 +230,7 @@ const TimeLineEvent = (props) => {
       </CardHeader>
       <CardContent>
         {event.fields?.["Artist name"] && <h2>{event.fields["Artist name"]}</h2>}
-        {event.fields?.["VIP Activity Type"] && <h2>{event.fields["VIP Activity Type"]}</h2>}
+        {event.fields?.["Activity Type"]?.[0] && <h2>{event.fields["Activity Type"][0]}</h2>}
         <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).add(0,"hours").format("HH:mm")}></Chip>
         <Chip text={event.fields["Type"]}></Chip>
         {event.fields?.["Location Name"] && <Chip text={event.fields["Location Name"]}></Chip>}
