@@ -79,7 +79,7 @@ const AgendaPage = (props) => {
     if(filteredEvents){
       let tempDays = Object.entries(_.groupBy(filteredEvents.map(event => {
         // const timeZone = 'Europe/Oslo' 
-        event.date = dayjs(event.fields["Start time"])
+        event.date = dayjs(event.fields["Start time"]).format('D MMM')
         return(event)
       }), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
       setDays(tempDays)
