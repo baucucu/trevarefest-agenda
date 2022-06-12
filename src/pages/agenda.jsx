@@ -149,23 +149,20 @@ export default AgendaPage;
 
 const TimeLineDay = (props) => {
   const {router, date, events, filters, user} = props;
-  
-  const orderedEvents = events.sort((a,b) => {
-    const isBefore = compareAsc( parseISO(a.fields["Start time"]), parseISO(b.fields["Start time"])) 
-    // console.log("isBefore: ", isBefore)
-    return isBefore
-  })
-
+  const [sortedEvents, setSortedEvents] = useState([])
   useEffect(()=>{
     console.log("day: ", date)
-    console.log("events: ", orderedEvents)
-  },[])
+    setSortedEvents(_.orderBy(events, i => i.fields["Start time"], 'asc'))
+  },[events])
+  useEffect(() => {
+    console.log("sortedEvents: ",sortedEvents)
+  },[sortedEvents])
 
   return (
     <div className="timeline-item">
       <div className="timeline-item-date">{dayjs(date).format("D MMM")}</div>
       <div className="timeline-item-content">
-        {orderedEvents.map((event, id)=> {return(<TimeLineEvent key={id} router={router} user={user} event={event}/>)})}
+        {sortedEvents.map((event, id)=> {return(<TimeLineEvent key={id} router={router} user={user} event={event}/>)})}
       </div>
     </div>
   )
@@ -233,10 +230,9 @@ const TimeLineEvent = (props) => {
         {event.fields?.["Activity Type"]?.[0] && <h2>{event.fields["Activity Type"][0]}</h2>}
         <Chip text={dayjs(event.fields["Start time"].replace("000Z",""), {timeZone}).add(0,"hours").format("HH:mm")}></Chip>
         <Chip text={event.fields["Type"]}></Chip>
-        {event.fields?.["Location Name"] && <Chip text={event.fields["Location Name"]}></Chip>}
-        {event.fields?.["VIP Activity Location Name"] && <Chip text={event.fields["VIP Activity Location Name"]}></Chip>}
-        {event.fields.Type === "Transportation" && event.fields?.["From Name"] && <Chip text={"From: "+event.fields["From Name"]}></Chip>}
-        {event.fields.Type === "Transportation" && event.fields?.["To Name"] && <Chip text={"To: "+event.fields["To Name"]}></Chip>}
+        {event.fields?.["Location name"] && <Chip text={event.fields["Location name"]}></Chip>}
+        {/* {event.fields.Type === "Transportation" && event.fields?.["From Name"] && <Chip text={"From: "+event.fields["From Name"]}></Chip>}
+        {event.fields.Type === "Transportation" && event.fields?.["To Name"] && <Chip text={"To: "+event.fields["To Name"]}></Chip>} */}
         
         {/* <p>{event.fields["Running order ID"]}</p> */}
       </CardContent>
