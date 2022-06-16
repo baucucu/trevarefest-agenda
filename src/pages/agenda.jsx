@@ -75,6 +75,7 @@ const AgendaPage = (props) => {
         if(event.fields.Type === "GET IN") {return false}
         if(event.fields.Type === "SOUNDCHECK") {return false}
         if(event.fields.Type === "CHANGE-OVER") {return false}
+        if(event.fields.Type === "VIP Activity") {return false}
         else {
           return(filters[event.fields["Type"]])
         }
@@ -152,7 +153,12 @@ const TimeLineDay = (props) => {
   const [sortedEvents, setSortedEvents] = useState([])
   useEffect(()=>{
     console.log("day: ", date)
-    setSortedEvents(_.orderBy(events, i => i.fields["Start time"], 'asc'))
+    setSortedEvents(_.orderBy(events, i => {
+        let date = new Date(i.fields["Start time"])
+        console.log("date: ",date)
+        return date
+      }
+      , 'asc'))
   },[events])
   useEffect(() => {
     console.log("sortedEvents: ",sortedEvents)
