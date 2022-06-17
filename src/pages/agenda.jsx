@@ -89,9 +89,9 @@ const AgendaPage = (props) => {
     if(filteredEvents){
       let tempDays = Object.entries(_.groupBy(filteredEvents.map(event => {
         // const timeZone = 'Europe/Oslo' 
-        event.date = dayjs(event.fields["Start time"]).format('D MMM')
+        event.date = dayjs(new Date(event.fields["Start time"].slice(0,10))).format('D MMM')
         return(event)
-      }).sort((a,b) => {return new Date(a.fields["Start time"] - b.fields["Start time"])}), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
+      }), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
       setDays(tempDays)
     }
   },[filteredEvents,setFilteredEvents])
