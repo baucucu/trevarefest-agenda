@@ -91,7 +91,7 @@ const AgendaPage = (props) => {
         // const timeZone = 'Europe/Oslo' 
         event.date = dayjs(event.fields["Start time"]).format('D MMM')
         return(event)
-      }), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
+      }).sort((a,b) => {return new Date(a.fields["Start time"] - b.fields["Start time"])}), 'date')).sort((a,b)=> {return new Date(a[0]) - new Date(b[0]);})
       setDays(tempDays)
     }
   },[filteredEvents,setFilteredEvents])
